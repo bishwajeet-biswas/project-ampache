@@ -1,0 +1,124 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "ampache"
+  namespace: "music"
+  labels:
+    app: "ampache"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "ampache"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: "ampache"
+    spec:
+      volumes:
+      - name: nirvana-dump
+        persistentVolumeClaim:
+          claimName: nirvana-storage
+      - name: ampache-config
+        configMap:
+          name: ampache-health
+      containers:
+      - image: "ampache/ampache:develop"
+        name: "ampache"
+        volumeMounts:
+          - mountPath: "/data"
+            name: nirvana-dump
+          - mountPath: "/etc/apache2/mods-enabled/status.conf"
+            name: ampache-config
+            subPath: status.conf
+        env:
+          - name: DB_HOST
+            value: ampache-mysql
+          - name: DB_PORT
+            value: "3306"
+          - name: DB_NAME
+            value: mysql
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-pass
+                key: password
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mysql-pass
+                key: username
+        resources: {}
+#          limits:
+#            cpu: "4000m"
+#            memory: 4Gi
+#          requests:
+#            cpu: "2000m"
+#            memory: 4Gi
+#        readinessProbe:
+#          failureThreshold: 10
+#          httpGet:
+#            path: /
+#            port: 5001
+#            scheme: HTTP
+#          initialDelaySeconds: 30
+#          periodSeconds: 10
+#          successThreshold: 1
+#          timeoutSeconds: 1
+---
+apiVersion: "autoscaling/v2beta1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "ampache-hpa"
+  namespace: "music"
+  labels:
+    app: "ampache"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "ampache"
+    apiVersion: "apps/v1beta1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      targetAverageUtilization: 80
+
+###### Creating Service for API ######
+
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "ampache-service"
+  namespace: "music"
+  labels:
+    app: "ampache"
+spec:
+  ports:
+  - protocol: "TCP"
+    port: 8054
+    targetPort: 80
+  selector:
+    app: "ampache"
+  type: "NodePort"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nirvana-storage
+  namespace: music
+  labels:
+    app: ampache
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
