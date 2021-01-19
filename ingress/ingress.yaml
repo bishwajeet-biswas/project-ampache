@@ -4,19 +4,13 @@ metadata:
   name: nirvana-ingress
   namespace: music
   annotations:
-     kubernetes.io/tls-acme: "true"
-     kubernetes.io/ingress.allow-http: "true"
+     #kubernetes.io/tls-acme: "true"
+     kubernetes.io/ingress.allow-http: "false"
 spec:
-  rules:
-  - host: warmpillow.xyz
-    http:
-      paths:
-      # The * is needed so that all traffic gets redirected to nginx
-      - path: /*
-        backend:
-          serviceName: ampache-service
-          servicePort: 8054
-#  tls:
-#   - secretName: ssl6
-#     hosts:
-#      - warmpillow.xyz
+  backend:
+    serviceName: ampache-service
+    servicePort: 8054
+  tls:
+   - secretName: nirvana-ssl
+     hosts:
+      - warmpillow.xyz

@@ -25,6 +25,9 @@ spec:
       - name: ampache-config
         configMap:
           name: ampache-health
+      - name: server-config
+        configMap: 
+          name: amp-server-config
       containers:
       - image: "ampache/ampache:develop"
         name: "ampache"
@@ -34,6 +37,9 @@ spec:
           - mountPath: "/etc/apache2/mods-enabled/status.conf"
             name: ampache-config
             subPath: status.conf
+          - mountPath: "/var/www/config/ampache.cfg.php"
+            name: server-config
+            subPath: ampache.cfg.php
         env:
           - name: DB_HOST
             value: ampache-mysql
@@ -106,7 +112,7 @@ spec:
     targetPort: 80
   selector:
     app: "ampache"
-  type: "NodePort"
+  type: "LoadBalancer"
 
 ---
 apiVersion: v1
