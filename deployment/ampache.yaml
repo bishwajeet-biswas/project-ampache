@@ -29,7 +29,8 @@ spec:
         configMap: 
           name: amp-server-config
       containers:
-      - image: "ampache/ampache:develop"
+      - image: "ampache/ampache:latest"
+      #- image: "vishvjeet/ampache:v2"
         name: "ampache"
         volumeMounts:
           - mountPath: "/data"
@@ -46,7 +47,7 @@ spec:
           - name: DB_PORT
             value: "3306"
           - name: DB_NAME
-            value: mysql
+            value: ampache-four
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
@@ -64,16 +65,16 @@ spec:
 #          requests:
 #            cpu: "2000m"
 #            memory: 4Gi
-#        readinessProbe:
-#          failureThreshold: 10
-#          httpGet:
-#            path: /
-#            port: 5001
-#            scheme: HTTP
-#          initialDelaySeconds: 30
-#          periodSeconds: 10
-#          successThreshold: 1
-#          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /server-status
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
 ---
 apiVersion: "autoscaling/v2beta1"
 kind: "HorizontalPodAutoscaler"
@@ -107,9 +108,14 @@ metadata:
     app: "ampache"
 spec:
   ports:
-  - protocol: "TCP"
+  - name: amport
+    protocol: "TCP"
     port: 8054
     targetPort: 80
+  - name: ws
+    protocol: "TCP"
+    port: 8100
+    targetPort: 8100
   selector:
     app: "ampache"
   type: "LoadBalancer"

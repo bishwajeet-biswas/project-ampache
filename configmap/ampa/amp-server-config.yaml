@@ -1,6 +1,6 @@
 apiVersion: v1
 data:
-  ampache.cfg.php: |
+  ampache.cfg.php: |+
     ;#<?php exit(); ?>##
     ;#########################################################
     ; General Config                                         #
@@ -10,7 +10,7 @@ data:
     ; if this config file is up to date
     ; this is compared against a value hard-coded
     ; into the init script
-    config_version = 48
+    config_version = 46
 
     ; Allow you to hard code a default git branch for Ampache
     ; If you set this value the inbuilt updater will use this branch for updates.
@@ -69,17 +69,17 @@ data:
 
     ; Name of your Ampache database
     ; DEFAULT: none
-    database_name = "ampache2"
+    database_name = "ampache-four"
 
     ; Username for your Ampache database
     ; DEFAULT: none
-    database_username = "ampache2"
+    database_username = "ampachefour"
 
     ; Password for your Ampache database, this can not be blank
     ; this is a 'forced' security precaution, the default value
     ; will not work (except if using socket authentication)
     ; DEFAULT: none
-    database_password = "Tribit@123"
+    database_password = "Tribit@098"
 
     ; Set a default charset for your database
     ; Don't change this unless you understand how to BACKUP and RESTORE a database!
@@ -108,7 +108,7 @@ data:
 
     ; Cryptographic secret
     ; This MUST BE changed with your own secret key. Ampache-specific, just pick any random string you want.
-    secret_key = "933c67cc1eddceecd6b33e6742572fc76b0f3bcc0bdae7f0c00d4c3aad1d63"
+    secret_key = "11069c00915037b26faca7f6e58da4d7545a8c039445952487c93d528a9258"
 
     ; Length that a session will last expressed in seconds. Default is
     ; one hour.
@@ -196,7 +196,6 @@ data:
     ; When this setting is enabled a user may only be logged in from a single
     ; IP address at any one time, this is to prevent sharing of accounts
     ; DEFAULT: "false"
-    ##below is manually enabled
     prevent_multiple_logins = "false"
 
 
@@ -216,6 +215,15 @@ data:
     ; May break valid tags.
     ; DEFAULT: "false"
     ;getid3_detect_id3v2_encoding = "true"
+
+    ; This determines if we write the changes to files (as id3 tags) when modifying metadata, or only keep them in Ampache (the default).
+    ; DEFAULT: "false"
+    ;write_id3 = "true"
+
+    ; This determines if we write the changes to files (as id3 tags) when modifying album art, or only keep them in Ampache (the default)
+    ; as id3 metadata when updated.
+    ; DEFAULT: "false"
+    ;write_id3_art = "true"
 
     ; This determines the order in which metadata sources are used (and in the
     ; case of plugins, checked)
@@ -242,7 +250,7 @@ data:
     ; This list specifies possible delimiters additional to \0
     ; This setting takes a regex pattern.
     ; DEFAULT: // / \ | , ;
-    additional_genre_delimiters = "[/]{2}|[/\\\\|,;]"
+    additional_genre_delimiters = "[/]{2}|[/|\\\\|\|,|;]"
 
     ; Enable importing custom metadata from files.
     ; This will need a bit of time during the import. So you may want to disable this
@@ -250,23 +258,6 @@ data:
     ; DEFAULT: "false"
     ;enable_custom_metadata = "true"
 
-    ;#########################################################
-    ; File Tags                                             #
-    ;#########################################################
-
-    ; This determines if we write the changes to files (as id3 tags) when modifying metadata, or only keep them in Ampache (the default).
-    ; DEFAULT: "false"
-    ;write_id3 = "true"
-
-    ; This determines if we write the changes to files (as id3 tags) when modifying album art, or only keep them in Ampache (the default)
-    ; as id3 metadata when updated.
-    ; DEFAULT: "false"
-    ;write_id3_art = "true"
-
-    ; Overwrite tags
-    ; This switch allows removal of id3v1 tags from the files.
-    ; DEFAULT: "false"
-    ;overwrite_tags = "true"
 
     ;#########################################################
     ; Catalog                                                #
@@ -419,8 +410,7 @@ data:
     ; if use_auth is false
     ; POSSIBLE VALUES: user, admin, manager, guest
     ; DEFAULT: guest
-    # manually edited - to reset admin password
-    default_auth_level = "admin"
+    default_auth_level = "guest"
 
     ; Skip Timer Threshold
     ; This allows custom times to decide when a track is skipped
@@ -454,6 +444,11 @@ data:
     ; assigned to a specific user set their user ID here.
     ; DEFAULT: -1
     ;rating_file_tag_user = 1
+
+    ; Set the amount of items Album/Video of the Moment will display
+    ; This was previously hardcoded into the site
+    ; DEFAULT: 6
+    ;of_the_moment = 6
 
     ; User flags/favorites
     ; This allows user flags for almost any object in Ampache as favorite
@@ -499,6 +494,7 @@ data:
     ; requirements on larger catalogs. If you have the memory this can create
     ; a 2-3x speed improvement.
     ; DEFAULT: "false"
+    #look at it later sometime
     ;memory_cache = "true"
 
     ; Memory Limit
@@ -605,40 +601,18 @@ data:
     ; DEFAULT: db,tags,folder,spotify,musicbrainz,lastfm,google
     art_order = "db,tags,folder,spotify,musicbrainz,lastfm,google"
 
-    ; Gather song art
-    ; Gather song art additionally to the album art. This will add each
-    ; image of a song into the database. If your database contains
-    ; many songs not related to an album this should possibly be set to true.
-    ; Otherwise for an environment that contains mainly full albums
-    ; this should remain false to avoid multiple entries of the same image.
-    ; You need to set show_song_art to true if you want to make the song images visible.
-    ; DEFAULT = false
-    ;gather_song_art = "true"
-
-    ; Show song art
-    ; Show song art instead of album art in web UI and Subsonic API.
-    ; This will only work when gather_song_art is set to true AND when
-    ; there is song art in the database.
-    ; DEFAULT: false
-    ;show_song_art = "true"
-
-    ; Spotify Album art search filter
-    ;  Narrow the search.
-    ;  POSSIBLE VALUES:  artist,(year:1991 or year:1991-2000)
-    ; POSSIBLE  VALUES: empty string("") or commented out for no filter
-    ; DEFAULT: none;
-    ;spotify_art_filter="artist"
-
-    ; Art search limit
-    ;  Limit the total images returned
-    ;  DEFAULT: 5
-    ;art_search_limit="15"
-
     ; Recommendations
     ; Set this to true to enable display of similar artists or albums
     ; while browsing. Requires Last.FM.
     ; DEFAULT: "false"
     ;show_similar = "true"
+
+    ; Hide Searches from the API
+    ; Set this to true and the get_indexes and playlists methods will not automatically include
+    ; searches/smart lists in the results.
+    ; Older versions of the Kodi Add-on will require this for playlists to work
+    ; DEFAULT: "false"
+    ;hide_search = "true"
 
     ;#########################################################
     ;      API keys                                          #
@@ -667,8 +641,7 @@ data:
     ; Set this to true to enable display missing albums and the
     ; possibility for users to mark it as wanted.
     ; DEFAULT: "false"
-    # manually enabled
-    wanted = "true"
+    wanted = "false"
 
     ; Wanted types
     ; Set the allowed types of wanted releases (album,compilation,single,ep,live,remix,promotion,official)
@@ -683,12 +656,13 @@ data:
     ; Labels
     ; Use labels to browse artists per label membership.
     ; DEFAULT: "false"
-    label = "true"
+    ;label = "true"
 
     ; Broadcasts
     ; Allow users to broadcast music.
     ; This feature requires advanced server configuration, please take a look on the wiki for more information.
     ; DEFAULT: "false"
+    # manually enabled
     broadcast = "true"
 
     ; Channels
@@ -713,8 +687,9 @@ data:
     ; Web Socket address
     ; Declare the web socket server address
     ; DEFAULT: determined automatically
+    ;websocket_address = "ws://localhost:8100"
     # manually enabled
-    websocket_address = "ws://localhost:8100"
+    websocket_address = "ws://localhost/ws"
 
     ; Refresh Limit
     ; This defines the default refresh limit in seconds for
@@ -730,8 +705,8 @@ data:
     ; specific user. This page is like rss in that it doesn't require a
     ; login to view.
     ; DEFAULT: "false"
-    # manaully enabled
-    use_now_playing_embedded = "false"
+    # manually enabled
+    use_now_playing_embedded = "true"
 
     ; Now Playing Refresh Limit
     ; This defines the refresh limit in seconds for the
@@ -741,8 +716,7 @@ data:
     ; If this value is not valid, automatic refresh will be disabled.
     ; DEFAULT: -1
     ; Possible Values; Int > 1
-    # manually enabled
-    now_playing_refresh_limit = "2"
+    ;now_playing_refresh_limit = "-1"
 
     ; Now Playing Custom CSS
     ; This defines the custom css file for the Now Playing embedded
@@ -773,12 +747,11 @@ data:
     ; DEFAULT: "false"
     ;allow_php_themes = "true"
 
-    ; Subsonic clients all seem to ignore the download method and always stream.
-    ; This setting will stop recording stats from Subsonic stream actions.
+    ; Subsonic clients all seem to ignore the download method
+    ; This setting will not scrobble actions from stream actions.
     ; (This means you can sync playlists without overloading your server)
-    ; Make sure you enable scrobbling in your Subsonic client to keep recording stats!
+    ; Make sure you enable scrobbling in your client to keep recording stats!
     ; DEFAULT: "true"
-    # manually enabled
     ;subsonic_stream_scrobble = "true"
 
     ;#########################################################
@@ -963,7 +936,7 @@ data:
     ; REMEMBER: don't forget to set the mail from address further down in the config.
     ; DEFAULT: "false"
     # manually enabled
-    allow_public_registration = "false"
+    allow_public_registration = "true"
 
     ; Require Captcha Text on Image confirmation
     ; Turning this on requires the user to correctly
@@ -972,12 +945,12 @@ data:
     ; to draw, or they failed to enter it.
     ; DEFAULT: "false"
     # manually enabled
-    captcha_public_reg = "false"
+    captcha_public_reg = "true"
 
     ; This setting turns on/off admin notification of registration.
     ; DEFAULT: "false"
     # manually enabled
-    admin_notify_reg = "false"
+    admin_notify_reg = "true"
 
     ; This setting determines whether the user will be created as a disabled user.
     ; If this is on, an administrator will need to manually enable the account
@@ -998,16 +971,14 @@ data:
     ; User will need to accept the agreement before they can register
     ; DEFAULT: "false"
     # manually enabled
-    user_agreement = "false"
+    user_agreement = "true"
 
     ; This disable email confirmation when registering.
     ; DEFAULT: "false"
-    # manually enabled
-    user_no_email_confirm = "false"
+    ;user_no_email_confirm = "true"
 
     ; This will display the cookie disclaimer (EU Cookie Law)
     ; DEFAULT: "false"
-    # manually enabled
     cookie_disclaimer = "false"
 
     ; The fields that will be shown on Registration page
@@ -1068,14 +1039,13 @@ data:
     ;transcode_mpc  = "required"
     ;transcode_ogg  = "required"
     ;transcode_oga  = "required"
-    ;transcode_opus = "required"
     ;transcode_wav  = "required"
     ;transcode_wma  = "required"
     ;transcode_aif  = "required"
     ;transcode_aiff = "required"
     ;transcode_ape  = "required"
     ;transcode_shn  = "required"
-    ;transcode_mp3  = "allowed"
+    transcode_mp3  = "allowed"
     ;;; Video
     ;transcode_avi  = "allowed"
     ;transcode_mkv  = "allowed"
@@ -1182,8 +1152,8 @@ data:
     ; Useful if you are having issues streaming the full track.
     ; You can set it for all streams or a specific player
     ; POSSIBLE VALUES: true webplayer api
-    ; DEFAULT: "webplayer"
-    send_full_stream = "webplayer"
+    ; DEFAULT: "false"
+    ;send_full_stream = "webplayer"
 
     ;#########################################################
     ; Proxy Settings (optional)                              #
@@ -1282,7 +1252,9 @@ data:
     ; For file name parsing. Any unnecessary abbreviations in file names can be removed during parsing
     ; by adding them to the list below so that they will be removed during the parsing process.
     common_abbr = "divx,xvid,dvdrip,hdtv,lol,axxo,repack,xor,pdtv,real,vtv,caph,2hd,proper,fqm,uncut,topaz,tvt,notv,fpn,fov,orenji,0tv,omicron,dsr,ws,sys,crimson,wat,hiqt,internal,brrip,boheme,vost,vostfr,fastsub,addiction,x264,LOL,720p,1080p,YIFY,evolve,fihtv,first,bokutox,bluray,tvboom,info"
+
 kind: ConfigMap
 metadata:
+  creationTimestamp: null
   name: amp-server-config
   namespace: music

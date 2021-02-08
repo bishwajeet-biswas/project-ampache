@@ -1,6 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
+  namespace: music
   name: music-alb-haproxymusic-ingress
   annotations:
      kubernetes.io/ingress.class: "music"
@@ -13,6 +14,13 @@ spec:
       - backend:
          serviceName: ampache-service
          servicePort: 8054
+  - host : warmpillow.xyz
+    http:
+      paths:
+      - path: /ws
+        backend:
+         serviceName: ampache-service
+         servicePort: 8100
   tls:
    - secretName: nirvana-ssl
      hosts:
