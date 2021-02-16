@@ -5,6 +5,11 @@ metadata:
   name: music-alb-haproxymusic-ingress
   annotations:
      kubernetes.io/ingress.class: "music"
+     ingress.kubernetes.io/rewrite-target: /
+     ingress.kubernetes.io/timeout-connect: "5000"
+     ingress.kubernetes.io/timeout-client: "5000"
+     ingress.kubernetes.io/timeout-server: "5000"
+     ingress.kubernetes.io/timeout-tunnel: "3600"
 spec:
   rules:
   - host : warmpillow.xyz
@@ -21,7 +26,16 @@ spec:
         backend:
          serviceName: ampache-service
          servicePort: 8100
+  - host : jeet.warmpillow.xyz
+    http:
+      paths:
+      #- path: *
+      - backend:
+         serviceName: wordpress
+         servicePort: 80
   tls:
    - secretName: nirvana-ssl
      hosts:
       - warmpillow.xyz
+      - jeet.warmpillow.xyz
+
